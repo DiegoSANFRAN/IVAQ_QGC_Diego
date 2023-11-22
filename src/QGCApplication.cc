@@ -103,6 +103,7 @@
 #include "VehicleLinkManager.h"
 #include "Autotune.h"
 #include "RemoteIDManager.h"
+#include "IVAQPayloadManager.h"
 #include "CustomAction.h"
 #include "CustomActionManager.h"
 
@@ -467,6 +468,7 @@ void QGCApplication::_initCommon()
     qmlRegisterUncreatableType<VehicleLinkManager>      (kQGCVehicle,                       1, 0, "VehicleLinkManager",         kRefOnly);
     qmlRegisterUncreatableType<Autotune>                (kQGCVehicle,                       1, 0, "Autotune",                   kRefOnly);
     qmlRegisterUncreatableType<RemoteIDManager>         (kQGCVehicle,                       1, 0, "RemoteIDManager",            kRefOnly);
+    qmlRegisterUncreatableType<MessageIvaqManager>      (kQGCVehicle,                       1, 0, "MessageIvaqManager",         kRefOnly);
 
     qmlRegisterUncreatableType<MissionController>       (kQGCControllers,                   1, 0, "MissionController",          kRefOnly);
     qmlRegisterUncreatableType<GeoFenceController>      (kQGCControllers,                   1, 0, "GeoFenceController",         kRefOnly);

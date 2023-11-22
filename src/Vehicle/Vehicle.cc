@@ -56,6 +56,7 @@
 #endif
 #include "Autotune.h"
 #include "RemoteIDManager.h"
+#include "IVAQPayloadManager.h"
 
 QGC_LOGGING_CATEGORY(VehicleLog, "VehicleLog")
 
@@ -418,6 +419,9 @@ void Vehicle::_commonInit()
     // Remote ID manager might want to acces parameters so make sure to create it after
     _remoteIDManager = new RemoteIDManager(this);
 
+    // IVAQ Parameter manager might want to acces parameters so make sure to create it after
+    _messageIvaqManager = new MessageIvaqManager(this);
+
     // Flight modes can differ based on advanced mode
     connect(_toolbox->corePlugin(), &QGCCorePlugin::showAdvancedUIChanged, this, &Vehicle::flightModesChanged);
 
@@ -658,6 +662,7 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
     _parameterManager->mavlinkMessageReceived(message);
     _imageProtocolManager->mavlinkMessageReceived(message);
     _remoteIDManager->mavlinkMessageReceived(message);
+    _messageIvaqManager->mavlinkMessageReceived(message);
 
     _waitForMavlinkMessageMessageReceived(message);
 
@@ -781,7 +786,7 @@ void Vehicle::_mavlinkMessageReceived(LinkInterface* link, mavlink_message_t mes
                     QByteArray(reinterpret_cast<const char*>(ser.data), ser.count));
         }
     }
-        break;
+        break; 
 #ifdef DAILY_BUILD // Disable use of development/WIP MAVLink messages for release builds
         case MAVLINK_MSG_ID_AVAILABLE_MODES_MONITOR:
     {

@@ -63,6 +63,7 @@ Rectangle {
         }
     }
 
+
     RowLayout {
         id:                     viewButtonRow
         anchors.bottomMargin:   1

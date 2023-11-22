@@ -78,6 +78,7 @@ class LinkManager;
 class InitialConnectStateMachine;
 class Autotune;
 class RemoteIDManager;
+class MessageIvaqManager;
 
 namespace events {
 namespace parser {
@@ -280,6 +281,7 @@ public:
     Q_PROPERTY(VehicleObjectAvoidance*  objectAvoidance     READ objectAvoidance    CONSTANT)
     Q_PROPERTY(Autotune*                autotune            READ autotune           CONSTANT)
     Q_PROPERTY(RemoteIDManager*         remoteIDManager     READ remoteIDManager    CONSTANT)
+    Q_PROPERTY(MessageIvaqManager*   messageIvaqManager     READ messageIvaqManager CONSTANT)
 
     // FactGroup object model properties
 
@@ -734,6 +736,7 @@ public:
     VehicleObjectAvoidance*         objectAvoidance     () { return _objectAvoidance; }
     Autotune*                       autotune            () const { return _autotune; }
     RemoteIDManager*                remoteIDManager     () { return _remoteIDManager; }
+    MessageIvaqManager*             messageIvaqManager  () { return _messageIvaqManager; }
 
     static const int cMaxRcChannels = 18;
 
@@ -1442,6 +1445,7 @@ private:
     InitialConnectStateMachine*     _initialConnectStateMachine = nullptr;
     Actuators*                      _actuators                  = nullptr;
     RemoteIDManager*                _remoteIDManager            = nullptr;
+    MessageIvaqManager*             _messageIvaqManager         = nullptr;
     StandardModes*                  _standardModes              = nullptr;
 
     static const char* _rollFactName;
