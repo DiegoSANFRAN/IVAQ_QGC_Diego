@@ -397,6 +397,7 @@ INCLUDEPATH += \
     src/FollowMe \
     src/Geo \
     src/GPS \
+    src/IVAQ \
     src/Joystick \
     src/PlanView \
     src/MissionManager \
@@ -589,6 +590,7 @@ HEADERS += \
     src/Compression/QGCZlib.h \
     src/FirmwarePlugin/PX4/px4_custom_mode.h \
     src/FollowMe/FollowMe.h \
+    src/IVAQ/IVAQPayloadManager.h \
     src/Joystick/Joystick.h \
     src/Joystick/JoystickManager.h \
     src/Joystick/JoystickMavCommand.h \
@@ -850,6 +852,7 @@ SOURCES += \
     src/Compression/QGCLZMA.cc \
     src/Compression/QGCZlib.cc \
     src/FollowMe/FollowMe.cc \
+    src/IVAQ/IVAQPayloadManager.cc \
     src/Joystick/Joystick.cc \
     src/Joystick/JoystickManager.cc \
     src/Joystick/JoystickMavCommand.cc \

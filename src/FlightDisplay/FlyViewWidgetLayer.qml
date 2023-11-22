@@ -129,6 +129,22 @@ Item {
         property real topEdgeRightInset: visible ? y + height : 0
     }
 
+    FlightDisplayViewIVAQPayload {
+        id:                 flightDisplayViewIVAQPayload
+        missionController:  _missionController
+
+        anchors.margins:            _toolsMargin
+        anchors.bottom:                parent.bottom
+        anchors.right:              parent.right
+        width:                      _rightPanelWidth * 1.5
+        //spacing:                    _toolsMargin
+        visible:                    QGroundControl.corePlugin.options.flyView.showInstrumentPanel && multiVehiclePanelSelector.showSingleVehiclePanel
+        //availableHeight:            parent.height - y - _toolsMargin
+
+        property real rightEdgeTopInset: visible ? parent.width - x : 0
+        property real topEdgeRightInset: visible ? y + height : 0
+    }
+
     PhotoVideoControl {
         id:                     photoVideoControl
         anchors.margins:        _toolsMargin
@@ -164,6 +180,7 @@ Item {
         id:                 telemetryPanel
         x:                  recalcXPosition()
         anchors.margins:    _toolsMargin
+        anchors.left:       parent.left
 
         property real bottomEdgeCenterInset: 0
         property real rightEdgeCenterInset: 0

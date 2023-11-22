@@ -1,5 +1,6 @@
 Module QGroundControl.FlightDisplay
 
+FlightDisplayViewIVAQPayload    1.0 FlightDisplayViewIVAQPayload.qml
 FlightDisplayViewWidgets        1.0 FlightDisplayViewWidgets.qml
 FlyView                         1.0 FlyView.qml
 FlyViewCustomLayer              1.0 FlyViewCustomLayer.qml
