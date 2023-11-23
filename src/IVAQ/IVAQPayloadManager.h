@@ -48,6 +48,8 @@ typedef enum
 } SV_SaveState_TypeDef;
 
 
+Q_DECLARE_LOGGING_CATEGORY(RemoteIDManagerLog)
+
 class MessageIvaqManager : public QObject
 {
   Q_OBJECT
@@ -82,6 +84,9 @@ signals:
     void noiseLevelChanged();
     void saveStatusChanged();
 
+private slots:
+    void _ivaqTimeout();
+
 private:
 
     QString _colorGrey          = "#808080";
@@ -94,6 +99,11 @@ private:
     SM_StageStates_TypeDef  _amplificationStagesRaw;
     SA_BoolTypeDef          _signalSaturationRaw;
     SV_SaveState_TypeDef    _saveStatusRaw;
+
+    float_t               _signalLevelRaw;
+    char                  _signalLevelRaw_str[4];
+    mavlink_named_value_int_t namval_mvk_msg;
+    mavlink_named_value_float_t signal_mvk_msg;
 
     MAVLinkProtocol*    _mavlink;
     Vehicle*            _vehicle;
@@ -111,9 +121,10 @@ private:
     void _handleNamedValueFloat         (const mavlink_message_t& message);
 
     void _payloadGenParamsDecode (mavlink_named_value_int_t *namval_mvk_msg);
-    void _payloadSigParamsDecode (mavlink_named_value_float_t *signal_mvk_msg);
+    void _payloadSignalDecode (mavlink_named_value_float_t *signal_mvk_msg);
 
-
+    // Timer that checks if Payload is sending messages
+    QTimer _ivaqTimeoutTimer;
 };
 
 #endif

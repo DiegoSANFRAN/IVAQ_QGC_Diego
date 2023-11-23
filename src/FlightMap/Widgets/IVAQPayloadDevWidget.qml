@@ -178,7 +178,7 @@ Rectangle {
             anchors.horizontalCenter:   parent.horizontalCenter
             anchors.verticalCenter:     parent.verticalCenter
 
-            property string _plSigLevelString:  "--"
+            property string _plSigLevelString:  _activeVehicle.messageIvaqManager.signalLevel//"--"
         }
         QGCLabel {
             anchors.left:               plSignalLevel.right
@@ -225,7 +225,7 @@ Rectangle {
             anchors.horizontalCenter:   parent.horizontalCenter
             anchors.verticalCenter:     parent.verticalCenter
 
-            property string _plNoiseLevelString:  "--"
+            property string _plNoiseLevelString:  _activeVehicle.messageIvaqManager.noiseLevel//"--"
         }
         QGCLabel {
             anchors.left:               plNoiseLevel.right
