@@ -12,6 +12,10 @@
 
 #include <QDebug>
 
+QGC_LOGGING_CATEGORY(MessageIvaqManagerLog, "MessageIvaqManagerLog")
+
+#define IVAQ_MVK_TIMEOUT 2000
+
 MessageIvaqManager::MessageIvaqManager(Vehicle* vehicle)
     : QObject               (vehicle)
     , _mavlink              (nullptr)
@@ -20,11 +24,17 @@ MessageIvaqManager::MessageIvaqManager(Vehicle* vehicle)
     , _amplificationStage1  (_colorGrey) 
     , _amplificationStage2  (_colorGrey) 
     , _signalSaturation     (_colorGrey) 
-    , _signalLevel          (_colorGrey) 
-    , _noiseLevel           (_colorGrey) 
+    , _signalLevel          ("--") 
+    , _noiseLevel           ("--") 
     , _saveStatus           (_colorGrey) 
 {
     _mavlink = qgcApp()->toolbox()->mavlinkProtocol();
+
+      // Timer to track a healthy RID device. When expired we let the operator know
+    _ivaqTimeoutTimer.setSingleShot(true);
+    _ivaqTimeoutTimer.setInterval(IVAQ_MVK_TIMEOUT);
+    connect(&_ivaqTimeoutTimer, &QTimer::timeout, this, &MessageIvaqManager::_ivaqTimeout);
+
 }
 
 void MessageIvaqManager::mavlinkMessageReceived(mavlink_message_t& message )
@@ -36,20 +46,56 @@ void MessageIvaqManager::mavlinkMessageReceived(mavlink_message_t& message )
             _handleNamedValueInt(message);
             break;
         case MAVLINK_MSG_ID_NAMED_VALUE_FLOAT:
-            //_handleNamedValueFloat(message);
+            _handleNamedValueFloat(message);
             break;
         default:
             break;
     }
 }
 
+// This slot will be called if we stop receiving mavlink messages for more than IVAQ_MVK_TIMEOUT seconds
+void MessageIvaqManager::_ivaqTimeout()
+{
+    _payloadStatusRaw = POWER_ON_ERROR_COMMS;
+
+    // We need to set PL Status Led to RED 
+    _payloadStatus = _colorRed;
+    emit payloadStatusChanged();
+
+    // Rest of LEDs need to be set to grey
+    // Amp Stages
+    _amplificationStage1 =  _colorGrey;
+    _amplificationStage2 =  _colorGrey;
+    emit amplificationStage1Changed();
+    emit amplificationStage2Changed();
+    // Saturation Led
+    _signalSaturation = _colorGrey;
+    emit signalSaturationChanged();
+    // Save Status Led
+    _saveStatus = _colorGrey;
+    emit saveStatusChanged();
+
+    // Signal and Noise Levels shall be set to "--"
+    _signalLevel = "--";
+    emit signalLevelChanged();
+    _noiseLevel = "--";
+    emit noiseLevelChanged();
+
+    qCDebug(MessageIvaqManagerLog) << "We stopped receiving mavlink messages from Ivaq Payload.";
+}
+
 void MessageIvaqManager::_handleNamedValueInt(const mavlink_message_t& message)
 {
-    mavlink_named_value_int_t namval_mvk_msg;
-
     mavlink_msg_named_value_int_decode(&message, &namval_mvk_msg);
-    
     _payloadGenParamsDecode(&namval_mvk_msg);
+    // Restart the timeout
+    _ivaqTimeoutTimer.start();
+}
+
+void MessageIvaqManager::_handleNamedValueFloat(const mavlink_message_t& message)
+{
+    mavlink_msg_named_value_float_decode(&message, &signal_mvk_msg);
+    _payloadSignalDecode(&signal_mvk_msg);
 }
 
 void MessageIvaqManager::_payloadGenParamsDecode (mavlink_named_value_int_t *namval_mvk_msg)
@@ -136,7 +182,15 @@ void MessageIvaqManager::_payloadGenParamsDecode (mavlink_named_value_int_t *nam
     }
 }
 
-void MessageIvaqManager::_payloadSigParamsDecode (mavlink_named_value_float_t *signal_mvk_msg)
+void MessageIvaqManager::_payloadSignalDecode (mavlink_named_value_float_t *signal_mvk_msg)
 {
+    if (strcmp(signal_mvk_msg->name,"RX_SIGNAL") == 0)
+    {
+        _signalLevelRaw = signal_mvk_msg->value;
+        sprintf(_signalLevelRaw_str,"%2d",(int)_signalLevelRaw);
+        _signalLevel = QString::fromLocal8Bit(_signalLevelRaw_str);
+        //sprintf(_signalLevel, "%2d\n", (int8_t)_signalLevelRaw);
 
+        emit signalLevelChanged();
+    } 
 }
