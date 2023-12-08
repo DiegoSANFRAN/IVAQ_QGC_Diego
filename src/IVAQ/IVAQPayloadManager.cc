@@ -24,8 +24,8 @@ MessageIvaqManager::MessageIvaqManager(Vehicle* vehicle)
     , _amplificationStage1  (_colorGrey) 
     , _amplificationStage2  (_colorGrey) 
     , _signalSaturation     (_colorGrey) 
-    , _signalLevel          ("--") 
-    , _noiseLevel           ("--") 
+    , _signalLevel          (99) // "--"
+    , _noiseLevel           (99) //  
     , _saveStatus           (_colorGrey) 
 {
     _mavlink = qgcApp()->toolbox()->mavlinkProtocol();
@@ -76,9 +76,9 @@ void MessageIvaqManager::_ivaqTimeout()
     emit saveStatusChanged();
 
     // Signal and Noise Levels shall be set to "--"
-    _signalLevel = "--";
+    _signalLevel = 99; //"--";
     emit signalLevelChanged();
-    _noiseLevel = "--";
+    _noiseLevel = 99; //"--";
     emit noiseLevelChanged();
 
     qCDebug(MessageIvaqManagerLog) << "We stopped receiving mavlink messages from Ivaq Payload.";
@@ -187,10 +187,9 @@ void MessageIvaqManager::_payloadSignalDecode (mavlink_named_value_float_t *sign
     if (strcmp(signal_mvk_msg->name,"RX_SIGNAL") == 0)
     {
         _signalLevelRaw = signal_mvk_msg->value;
-        sprintf(_signalLevelRaw_str,"%2d",(int)_signalLevelRaw);
-        _signalLevel = QString::fromLocal8Bit(_signalLevelRaw_str);
-        //sprintf(_signalLevel, "%2d\n", (int8_t)_signalLevelRaw);
-
+        _signalLevel = (int)_signalLevelRaw;
+        //qDebug() << _signalLevel;
+        
         emit signalLevelChanged();
     } 
 }

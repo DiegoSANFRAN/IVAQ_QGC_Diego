@@ -61,16 +61,16 @@ public:
     Q_PROPERTY(QString amplificationStage1  READ amplificationStage1     NOTIFY amplificationStage1Changed);
     Q_PROPERTY(QString amplificationStage2  READ amplificationStage2     NOTIFY amplificationStage2Changed);
     Q_PROPERTY(QString signalSaturation     READ signalSaturation        NOTIFY signalSaturationChanged);
-    Q_PROPERTY(QString signalLevel          READ signalLevel             NOTIFY signalLevelChanged);
-    Q_PROPERTY(QString noiseLevel           READ noiseLevel              NOTIFY noiseLevelChanged);
+    Q_PROPERTY(int     signalLevel          READ signalLevel             NOTIFY signalLevelChanged);
+    Q_PROPERTY(int     noiseLevel           READ noiseLevel              NOTIFY noiseLevelChanged);
     Q_PROPERTY(QString saveStatus           READ saveStatus              NOTIFY saveStatusChanged);
 
     QString payloadStatus         (void) const { return _payloadStatus; }
     QString amplificationStage1   (void) const { return _amplificationStage1; }
     QString amplificationStage2   (void) const { return _amplificationStage2; }
     QString signalSaturation      (void) const { return _signalSaturation; }
-    QString signalLevel           (void) const { return _signalLevel; }
-    QString noiseLevel            (void) const { return _noiseLevel; }
+    int signalLevel               (void) const { return _signalLevel; }
+    int noiseLevel                (void) const { return _noiseLevel; }
     QString saveStatus            (void) const { return _saveStatus; }
 
     void mavlinkMessageReceived (mavlink_message_t& message);
@@ -112,8 +112,8 @@ private:
     QString _amplificationStage1;   
     QString _amplificationStage2;   
     QString _signalSaturation;      
-    QString _signalLevel;           
-    QString _noiseLevel;            
+    int     _signalLevel;         
+    int     _noiseLevel;            
     QString _saveStatus;     
 
     // IVAQ - Management of PL Variables through NAMED_VALUE_INT and NAMED_VALUE_FLOAT mavlink messages 
